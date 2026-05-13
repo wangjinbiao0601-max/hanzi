@@ -1,12 +1,12 @@
 .page-home {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  background-color: #E8F0FE;
 }
 
-/* ── 全屏背景图 ── */
+/* ── 全屏背景图（absolute避免小程序WebView的fixed渲染问题）─ */
 .bg-full {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
