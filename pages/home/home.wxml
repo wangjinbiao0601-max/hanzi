@@ -1,0 +1,22 @@
+<view class="page-home">
+  <view class="home-title">汉字消消乐</view>
+  <view class="home-sub">选择关卡进行挑战</view>
+  <view class="home-grid">
+    <view
+      wx:for="{{levels}}"
+      wx:key="index"
+      class="level-card {{item.done ? 'level-done' : ''}}"
+      data-index="{{index}}"
+      catchtap="onSelectLevel"
+    >
+      <view class="done-badge" wx:if="{{item.done}}">✓</view>
+      <!-- 固定尺寸外框：关卡文字 -->
+      <view class="card-frame">
+        <view class="lv-num">第 {{index + 1}} 关</view>
+        <view class="lv-name">{{item.label}}</view>
+      </view>
+      <!-- 剩余数量 -->
+      <view class="lv-remain">剩余 {{item.pairs}} 对</view>
+    </view>
+  </view>
+</view>

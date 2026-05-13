@@ -1,0 +1,57 @@
+<view class="page-container">
+  <!-- 顶部信息栏 -->
+  <view class="header">
+    <view class="back-btn" bindtap="onGoToLevel1">← 返回选关</view>
+
+    <!-- 固定尺寸外框：关卡文字 -->
+    <view class="card-frame">
+      <view class="lv-num">{{levelNum}}</view>
+      <view class="lv-name">{{levelName}}</view>
+    </view>
+
+    <!-- 剩余数量 -->
+    <view class="lv-remain">剩余 <text class="remain-num">{{remaining}}</text> 个</view>
+  </view>
+
+  <!-- 消除区域外框 -->
+  <view class="grid-frame">
+    <view class="grid-container {{gridCols === 2 ? 'grid-narrow' : ''}}">
+      <view
+        wx:for="{{grid}}"
+        wx:key="id"
+        class="grid-row"
+      >
+        <view
+          wx:for="{{item}}"
+          wx:key="id"
+          class="grid-cell {{item.matched ? 'cell-matched' : ''}} {{item.selected ? 'cell-selected' : ''}} {{animating && item.selected ? 'cell-tap' : ''}}"
+          data-id="{{item.id}}"
+          catchtap="onTileTap"
+        >
+          <text class="cell-char {{item.matched ? 'char-matched' : ''}} {{item.selected ? 'char-selected' : ''}}">{{item.char}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="footer">
+    <view class="footer-btns">
+      <view class="btn-icon" bindtap="onRestartLevel">↻</view>
+      <view class="btn-icon" bindtap="onGoToLevel1">⌂</view>
+    </view>
+    <text class="hint-text">点击两个相同的汉字进行消除</text>
+  </view>
+
+  <!-- 关卡完成弹窗 -->
+  <view class="modal-mask {{showModal ? 'modal-show' : ''}}" catchtap="onModalTap">
+    <view class="modal-content">
+      <view class="modal-icon">🎉</view>
+      <view class="modal-title">恭喜过关！</view>
+      <view class="modal-subtitle">{{levelLabel}} 完成</view>
+      <button class="btn-next" bindtap="onNextLevel">
+        {{hasNextLevel ? '下一关' : '返回选关'}}
+      </button>
+    </view>
+  </view>
+</view>

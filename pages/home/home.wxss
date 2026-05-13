@@ -1,0 +1,114 @@
+.page-home {
+  min-height: 100vh;
+  background-color: #F0F4F8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 30rpx;
+  box-sizing: border-box;
+}
+
+.home-title {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #2C3E50;
+  margin-bottom: 8rpx;
+}
+.home-sub {
+  font-size: 26rpx;
+  color: #888;
+  margin-bottom: 40rpx;
+}
+
+.home-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+/* ── 关卡卡片（整体背景框） ── */
+.level-card {
+  background: #fff;
+  border: 2rpx solid #E0E6ED;
+  border-radius: 24rpx;
+  padding: 24rpx 16rpx 20rpx;
+  text-align: center;
+  position: relative;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+}
+.level-card:active {
+  transform: scale(0.95);
+}
+
+/* ── 固定尺寸外框 ── */
+.card-frame {
+  width: 180rpx;
+  height: 160rpx;
+  border: 3rpx solid #D6E2F0;
+  border-radius: 18rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  background: #F8FAFB;
+  margin-bottom: 14rpx;
+}
+
+.lv-num {
+  font-size: 24rpx;
+  color: #999;
+  font-weight: 500;
+}
+.lv-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+/* ── 剩余数量 ── */
+.lv-remain {
+  font-size: 20rpx;
+  color: #aaa;
+  font-weight: 400;
+}
+
+/* ── 已完成状态 ── */
+.level-done {
+  border-color: #A5D6A7;
+  background: #F0F9F3;
+}
+.level-done .card-frame {
+  border-color: #A5D6A7;
+  background: #E8F8EE;
+}
+.level-done .lv-name {
+  color: #2E7D32;
+}
+.level-done .lv-num {
+  color: #66BB6A;
+}
+.level-done .lv-remain {
+  color: #81C784;
+}
+
+.done-badge {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 44rpx;
+  height: 44rpx;
+  background: #4CAF50;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 24rpx;
+  line-height: 44rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 12rpx rgba(76,175,80,0.4);
+  z-index: 2;
+}

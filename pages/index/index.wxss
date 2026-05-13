@@ -1,0 +1,267 @@
+/* ── 页面容器 ── */
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30rpx 20rpx;
+  box-sizing: border-box;
+  background-color: #F0F4F8;
+}
+
+/* ── 顶部信息栏 ── */
+.header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 8rpx 24rpx;
+  background: #fff;
+  border: 1rpx solid #E0E6ED;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+  transition: all 0.2s;
+}
+.back-btn:active {
+  transform: scale(0.94);
+}
+
+/* ── 固定尺寸外框 ── */
+.card-frame {
+  width: 340rpx;
+  height: 160rpx;
+  border: 3rpx solid #D6E2F0;
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  background: #F8FAFB;
+  margin-bottom: 14rpx;
+}
+
+.lv-num {
+  font-size: 28rpx;
+  color: #999;
+  font-weight: 500;
+}
+.lv-name {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+/* ── 剩余数量 ── */
+.lv-remain {
+  font-size: 24rpx;
+  color: #888;
+  font-weight: 400;
+}
+.remain-num {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #E74C3C;
+}
+
+/* ── 消除区域外框 ── */
+.grid-frame {
+  box-sizing: border-box;
+  width: 640rpx;
+  max-width: 100%;
+  min-height: 200rpx;
+  background: #fff;
+  border: 3rpx solid #D6E2F0;
+  border-radius: 24rpx;
+  padding: 24rpx 16rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  flex-shrink: 0;
+}
+
+/* ── 游戏网格 ── */
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  align-items: center;
+}
+.grid-narrow {
+  width: 310rpx;
+}
+.grid-row {
+  display: flex;
+  gap: 12rpx;
+  justify-content: center;
+}
+
+/* ── 单个格子 ── */
+.grid-cell {
+  width: 140rpx;
+  height: 140rpx;
+  background: #EFF4FA;
+  border: 2rpx solid #D6E2F0;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cell-tap {
+  animation: tapAnim 0.3s ease;
+}
+@keyframes tapAnim {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+/* ── 选中态 ── */
+.cell-selected {
+  background: #D6E2F0;
+  border: 4rpx solid #7FB3E0;
+  box-shadow: 0 0 0 4rpx rgba(127,179,224,0.25);
+  transform: translateY(-4rpx);
+}
+
+/* ── 已消除态 ── */
+.cell-matched {
+  opacity: 0;
+  transform: scale(0.5);
+  pointer-events: none;
+}
+
+/* ── 格子内的文字 ── */
+.cell-char {
+  font-size: 52rpx;
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+.char-selected {
+  transform: scale(1.1);
+}
+.char-matched {
+  opacity: 0;
+}
+
+/* ── 底部操作栏 ── */
+.footer {
+  margin-top: 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+.footer-btns {
+  display: flex;
+  gap: 30rpx;
+}
+.btn-icon {
+  width: 80rpx;
+  height: 80rpx;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #555;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+}
+.btn-icon:active {
+  transform: scale(0.88);
+  background: #f5f5f5;
+}
+.hint-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* ── 弹窗遮罩 ── */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 999;
+}
+.modal-show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 30rpx;
+  padding: 60rpx 50rpx;
+  width: 500rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: modalIn 0.4s ease;
+}
+@keyframes modalIn {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+.modal-title {
+  font-size: 42rpx;
+  font-weight: 700;
+  color: #2C3E50;
+  margin-bottom: 10rpx;
+}
+.modal-subtitle {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 40rpx;
+}
+
+.btn-next {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background: linear-gradient(135deg, #4A90D9, #357ABD);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 44rpx;
+  border: none;
+  box-shadow: 0 6rpx 20rpx rgba(74,144,217,0.4);
+}
+.btn-next::after {
+  border: none;
+}
+.btn-next:active {
+  transform: scale(0.96);
+}

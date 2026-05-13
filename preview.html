@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>汉字消消乐</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #F0F4F8;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.container {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  min-height: 100vh;
+  position: relative;
+  margin: 0 auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+/* ───── 启动页 ───── */
+.splash-screen {
+  display: none;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #f5f5f5;
+  z-index: 10;
+}
+.splash-screen.show { display: block; }
+.splash-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.start-btn {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 64px;
+  background: linear-gradient(135deg, #FF6B35, #FF8F5E);
+  border: none;
+  border-radius: 32px;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(255,107,53,0.5);
+  animation: btnPulse 2s ease-in-out infinite;
+  z-index: 10;
+}
+.start-btn:active { transform: translateX(-50%) scale(0.95); }
+@keyframes btnPulse {
+  0%, 100% { box-shadow: 0 8px 30px rgba(255,107,53,0.5); transform: translateX(-50%) scale(1); }
+  50% { box-shadow: 0 12px 40px rgba(255,107,53,0.7); transform: translateX(-50%) scale(1.05); }
+}
+
+/* ───── 主界面 ───── */
+.home-screen { display: none; }
+.game-screen { display: none; }
+.show-home .home-screen { display: block; }
+.show-game .home-screen { display: none; }
+.show-game .game-screen { display: block; }
+.home-inner {
+  padding: 30px 24px;
+}
+.home-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: #2C3E50;
+  margin-bottom: 4px;
+}
+.home-sub {
+  text-align: center;
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 24px;
+}
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+/* ── 关卡卡片（整体背景框） ── */
+.level-card {
+  background: #fff;
+  border: 2px solid #E0E6ED;
+  border-radius: 16px;
+  padding: 16px 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.level-card:active { transform: scale(0.95); }
+
+/* 固定尺寸外框 */
+.card-frame {
+  width: 120px;
+  height: 110px;
+  border: 2.5px solid #D6E2F0;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #F8FAFB;
+  margin-bottom: 10px;
+}
+.level-card .lv-num {
+  font-size: 13px;
+  color: #999;
+  font-weight: 500;
+}
+.level-card .lv-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+}
+.level-card .lv-remain {
+  font-size: 11px;
+  color: #aaa;
+}
+
+.level-card.done {
+  border-color: #A5D6A7;
+  background: #F0F9F3;
+}
+.level-card.done .card-frame {
+  border-color: #A5D6A7;
+  background: #E8F8EE;
+}
+.level-card.done .lv-name { color: #2E7D32; }
+.level-card.done .lv-num { color: #66BB6A; }
+.level-card.done .lv-remain { color: #81C784; }
+
+.level-card .done-badge {
+  display: none;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 26px;
+  height: 26px;
+  background: #4CAF50;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  line-height: 26px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(76,175,80,0.4);
+  z-index: 2;
+}
+.level-card.done .done-badge { display: block; }
+
+/* ───── 游戏界面 ───── */
+.game-inner {
+  padding: 20px 24px 30px;
+}
+.game-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.game-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 18px;
+  background: #fff;
+  border: 1px solid #E0E6ED;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  transition: all 0.2s;
+}
+.game-back-btn:active { transform: scale(0.94); }
+
+.game-card-frame {
+  width: 220px;
+  height: 110px;
+  border: 2.5px solid #D6E2F0;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #F8FAFB;
+  margin-bottom: 10px;
+}
+.game-header .lv-num {
+  font-size: 15px;
+  color: #999;
+  font-weight: 500;
+}
+.game-header .lv-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+}
+.game-remain {
+  font-size: 13px;
+  color: #888;
+}
+.remain-num {
+  font-size: 15px;
+  font-weight: 700;
+  color: #e74c3c;
+}
+
+/* ── 消除区域外框 ── */
+.game-grid-frame {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 370px;
+  min-height: 140px;
+  background: #fff;
+  border: 2.5px solid #D6E2F0;
+  border-radius: 18px;
+  padding: 14px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+.grid {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+  justify-content: center;
+}
+.cols-4 { grid-template-columns: repeat(4, 1fr); max-width: 340px; margin: 0 auto; }
+.cols-2 { grid-template-columns: repeat(2, 1fr); max-width: 140px; margin: 0 auto; }
+.tile {
+  aspect-ratio: 1;
+  background: #EFF4FA;
+  border: 2px solid #D6E2F0;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  min-width: 60px;
+  min-height: 60px;
+}
+.tile:active { transform: scale(0.92); }
+.tile.selected {
+  background: #D6E2F0;
+  border-color: #7FB3E0;
+  box-shadow: 0 0 0 3px rgba(127,179,224,0.3);
+  transform: translateY(-3px);
+}
+.tile.matched {
+  opacity: 0;
+  transform: scale(0.3);
+  pointer-events: none;
+}
+.tile.no-match {
+  animation: shake 0.4s ease;
+  border-color: #e74c3c;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.game-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.btns { display: flex; gap: 20px; }
+.btn-icon {
+  width: 44px; height: 44px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  color: #555;
+}
+.btn-icon:active { transform: scale(0.9); background: #f0f0f0; }
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 16px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 4px;
+}
+.back-btn:active { transform: scale(0.94); }
+
+.btn-primary {
+  background: linear-gradient(135deg, #4a90d9, #357abd);
+  color: #fff;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(74,144,217,0.4);
+}
+.btn-primary:active { transform: scale(0.96); }
+.hint { font-size: 12px; color: #999; margin-top: 4px; }
+
+/* ───── 弹窗 ───── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 30px;
+  text-align: center;
+  animation: pop 0.4s ease;
+  max-width: 340px;
+  width: 90%;
+}
+.modal-icon { font-size: 60px; margin-bottom: 10px; }
+.modal-title { font-size: 24px; font-weight: 700; color: #333; margin-bottom: 6px; }
+.modal-subtitle { font-size: 14px; color: #666; margin-bottom: 24px; }
+</style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+  <!-- ══════ 启动页 ══════ -->
+  <div class="splash-screen show" id="splash">
+    <img class="splash-bg" src="images/splash_bg.png" alt="汉字消消乐">
+    <button class="start-btn" onclick="onStartGame()">开始游戏</button>
+  </div>
+
+  <!-- ══════ 主界面（关卡选择） ══════ -->
+  <div class="home-screen">
+    <div class="home-inner">
+      <div class="home-title">汉字消消乐</div>
+      <div class="home-sub">选择关卡进行挑战</div>
+      <div class="home-grid" id="homeGrid"></div>
+    </div>
+  </div>
+
+  <!-- ══════ 游戏界面 ══════ -->
+  <div class="game-screen">
+    <div class="game-inner">
+      <div class="game-header">
+        <button class="game-back-btn" onclick="goHome()">← 返回选关</button>
+        <div class="game-card-frame" id="gameCardFrame">
+          <div class="lv-num" id="gameLevelNum">第 1 关</div>
+          <div class="lv-name" id="gameLevelName">大小入门</div>
+        </div>
+        <div class="game-remain">剩余 <span class="remain-num" id="gameRemainCount">4</span> 个</div>
+      </div>
+      <div class="game-grid-frame">
+        <div class="grid cols-4" id="grid"></div>
+      </div>
+      <div class="game-footer">
+        <div class="btns">
+          <button class="btn-icon" onclick="restartLevel()" title="重来">↻</button>
+          <button class="btn-icon" onclick="goHome()" title="选关">☰</button>
+        </div>
+        <div class="hint">点击两个相同的汉字进行消除</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <div class="modal-title" id="modalTitle">恭喜过关！</div>
+    <div class="modal-subtitle" id="modalSubtitle"></div>
+    <button class="btn-primary" id="modalBtn" onclick="nextLevel()">下一关 →</button>
+  </div>
+</div>
+
+<script>
+// ── 启动页 → 关卡选择 ──
+function onStartGame() {
+  document.getElementById('splash').classList.remove('show');
+  document.getElementById('app').classList.remove('show-home');
+  document.getElementById('app').classList.add('show-home');
+  renderHome();
+}
+
+// ── 关卡配置 ──
+const LEVEL_CONFIG = [
+  { cols: 2, rows: 2, chars: ['大','小'], label: '大小入门' },
+  { cols: 2, rows: 3, chars: ['上','下','左'], label: '方位初识' },
+  { cols: 4, rows: 4, chars: ['日','月','山','水','花','鸟','虫','鱼'], label: '自然之美' },
+  { cols: 4, rows: 4, chars: ['春','夏','秋','冬','风','云','雨','雪'], label: '四季气象' },
+  { cols: 4, rows: 4, chars: ['人','口','手','足','耳','目','心','力'], label: '身体认知' },
+  { cols: 4, rows: 5, chars: ['金','木','火','土','石','田','林','川','天','地'], label: '大地万物' },
+  { cols: 4, rows: 5, chars: ['红','黄','蓝','绿','白','黑','银','粉','紫','灰'], label: '色彩缤纷' },
+  { cols: 4, rows: 5, chars: ['东','南','西','北','前','后','右','中','外','里'], label: '方位空间' },
+  { cols: 4, rows: 5, chars: ['牛','羊','马','龙','虎','鹿','龟','凤','鹤','象'], label: '灵兽世界' },
+  { cols: 4, rows: 5, chars: ['星','光','明','年','岁','节','庆','圆','安','和'], label: '美好祝愿' },
+];
+
+function getDoneLevels() {
+  try { return JSON.parse(localStorage.getItem('hanziDone') || '[]'); } catch(e) { return []; }
+}
+function setDoneLevel(level) {
+  const done = getDoneLevels();
+  if (!done.includes(level)) { done.push(level); localStorage.setItem('hanziDone', JSON.stringify(done)); }
+}
+
+function renderHome() {
+  const grid = document.getElementById('homeGrid');
+  grid.innerHTML = '';
+  const done = getDoneLevels();
+  LEVEL_CONFIG.forEach((c, i) => {
+    const pairs = (c.cols * c.rows) / 2;
+    const card = document.createElement('div');
+    card.className = 'level-card';
+    if (done.includes(i)) card.classList.add('done');
+    card.innerHTML = `
+      <div class="done-badge">✓</div>
+      <div class="card-frame">
+        <div class="lv-num">第 ${i+1} 关</div>
+        <div class="lv-name">${c.label}</div>
+      </div>
+      <div class="lv-remain">剩余 ${pairs} 对</div>
+    `;
+    card.dataset.level = i;
+    card.addEventListener('click', () => startGame(i));
+    grid.appendChild(card);
+  });
+}
+
+function goHome() {
+  document.getElementById('app').classList.remove('show-game');
+  document.getElementById('app').classList.add('show-home');
+  renderHome();
+}
+
+let currentLevel = 0;
+let tiles = [];
+let firstId = null;
+let canTap = true;
+
+function startGame(level) {
+  currentLevel = level;
+  document.getElementById('app').classList.remove('show-home');
+  document.getElementById('app').classList.add('show-game');
+  initLevel(level);
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function generateLevel(l) {
+  const c = LEVEL_CONFIG[l];
+  const a = [];
+  c.chars.forEach(v => { a.push(v, v); });
+  return shuffle(a);
+}
+
+function initLevel(l) {
+  currentLevel = l;
+  const c = LEVEL_CONFIG[l];
+
+  // 设置关卡标题
+  const levelNum = l + 1;
+  document.getElementById('gameLevelNum').textContent = `第 ${levelNum} 关`;
+  document.getElementById('gameLevelName').textContent = c.label;
+
+  tiles = generateLevel(l).map((ch, i) => ({ id: i, char: ch, selected: false, matched: false }));
+  firstId = null;
+  canTap = true;
+
+  const g = document.getElementById('grid');
+  g.className = 'grid';
+  g.classList.add(c.cols === 2 ? 'cols-2' : 'cols-4');
+
+  renderGrid();
+  document.getElementById('modal').classList.remove('show');
+  updateRemain();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  tiles.forEach(t => {
+    const d = document.createElement('div');
+    d.className = 'tile';
+    if (t.matched) d.classList.add('matched');
+    if (t.selected) d.classList.add('selected');
+    d.textContent = t.matched ? '' : t.char;
+    d.dataset.id = t.id;
+    d.addEventListener('click', () => onTileClick(t.id));
+    grid.appendChild(d);
+  });
+}
+
+function updateRemain() {
+  document.getElementById('gameRemainCount').textContent = tiles.filter(t => !t.matched).length;
+}
+
+function getTileEl(i) { return document.querySelector(`.tile[data-id="${i}"]`); }
+
+function onTileClick(id) {
+  if (!canTap) return;
+  const tile = tiles[id];
+  if (tile.matched) return;
+
+  if (firstId === null) { tile.selected = true; firstId = id; renderGrid(); return; }
+  const first = tiles[firstId];
+  if (first.id === tile.id) { tile.selected = false; firstId = null; renderGrid(); return; }
+  if (first.char === tile.char) handleMatch(first, tile);
+  else handleNoMatch(first, tile);
+}
+
+function handleMatch(a, b) {
+  canTap = false;
+  a.matched = true; b.matched = true;
+  a.selected = false; b.selected = false;
+  firstId = null;
+  renderGrid(); updateRemain();
+  setTimeout(() => { canTap = true; }, 300);
+  if (tiles.filter(t => !t.matched).length === 0) setTimeout(showComplete, 400);
+}
+
+function handleNoMatch(a, b) {
+  canTap = false;
+  a.selected = true; b.selected = true;
+  renderGrid();
+  const e1 = getTileEl(a.id), e2 = getTileEl(b.id);
+  if (e1) e1.classList.add('no-match'); if (e2) e2.classList.add('no-match');
+  setTimeout(() => { a.selected = false; b.selected = false; firstId = null; renderGrid(); canTap = true; }, 500);
+}
+
+function showComplete() {
+  const c = LEVEL_CONFIG[currentLevel];
+  setDoneLevel(currentLevel);
+  document.getElementById('modalTitle').textContent = '恭喜过关！';
+  document.getElementById('modalSubtitle').textContent = `${c.label} 完成`;
+  document.getElementById('modalBtn').textContent = currentLevel < LEVEL_CONFIG.length - 1 ? '下一关 →' : '全部通关！';
+  document.getElementById('modal').classList.add('show');
+}
+
+function nextLevel() {
+  document.getElementById('modal').classList.remove('show');
+  if (currentLevel < LEVEL_CONFIG.length - 1) {
+    startGame(currentLevel + 1);
+  } else {
+    goHome();
+  }
+}
+
+function restartLevel() { initLevel(currentLevel); }
+</script>
+</body>
+</html>
